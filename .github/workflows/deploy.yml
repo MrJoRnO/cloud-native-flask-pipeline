@@ -28,7 +28,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         INITIAL_VERSION: 1.0.0
         DEFAULT_BUMP: patch # up the last number in the tag (default)
-
+        WITH_V: false
+        PRERELEASE: false
+    
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
