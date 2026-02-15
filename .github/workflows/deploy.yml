@@ -93,5 +93,6 @@ jobs:
         helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
           --namespace monitoring --create-namespace \
           --set grafana.enabled=true \
-          --set prometheus.enabled=true
-          --set grafana.adminPassword=admin123
+          --set prometheus.enabled=true \
+          --set grafana.adminPassword=admin123 \
+          --wait --timeout 10m0s

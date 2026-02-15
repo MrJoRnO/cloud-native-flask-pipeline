@@ -80,7 +80,7 @@ Accessing Grafana Dashboards:
 1. Establish a Tunnel:
 ```bash
  kubectl port-forward deployment/monitoring-grafana 3000:3000 -n monitoring
-```yaml
+```
 
 2. Access in Browser: Open http://localhost:3000.
 
