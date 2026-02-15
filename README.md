@@ -17,13 +17,14 @@ This project demonstrates a complete, automated DevOps lifecycle for a Flask app
 - Automation: GitHub Actions for full-stack CI/CD (GitOps).
 
 📂 Project Structure
+```bash
 .
 ├── .github/workflows/   # CI/CD Pipeline (GitHub Actions)
 ├── app/                 # Flask Application & Dockerfile
 ├── helm/                # Kubernetes Helm Charts
 ├── terraform/           # IaC modules for AWS resources
 └── README.md            # You are here!
-
+```
 🚀 The CI/CD Pipeline (GitOps)
 Our pipeline is designed for a fully automated "Hands-Off" experience:
 
@@ -47,16 +48,17 @@ Our pipeline is designed for a fully automated "Hands-Off" experience:
 To manage the cluster and view metrics from your local terminal, follow these steps:
 
 1. Configure AWS CLI:
-
+```bash
 - aws configure
-
+```
 2. Update Kubeconfig (Connect kubectl to EKS):
-
-- aws eks update-kubeconfig --region eu-central-1 --name devops-assignment-eks
-
+```bash
+ aws eks update-kubeconfig --region eu-central-1 --name devops-assignment-eks
+```
 3. Verify Connection:
-
-- kubectl get nodes
+```bash
+kubectl get nodes
+```
 
 📖 How to Use
 
@@ -70,7 +72,11 @@ To manage the cluster and view metrics from your local terminal, follow these st
 - For a Minor (1.1.0): Add #minor to your commit message.
 
 4. Access the App:
- Run ["kubectl get svc"] to get the LoadBalancer URL once the pipeline finishes.
+ Run
+  ```bash
+ kubectl get svc
+```
+to get the LoadBalancer URL once the pipeline finishes.
 
 📊 Monitoring & Observability
 
