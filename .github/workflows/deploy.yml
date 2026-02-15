@@ -72,4 +72,3 @@ jobs:
         helm upgrade --install my-flask-app ./helm/flask-app \
           --set image.tag=${{ steps.tag_version.outputs.new_tag }} \
           --wait
-          
