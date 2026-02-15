@@ -45,6 +45,7 @@ Our pipeline is designed for a fully automated "Hands-Off" experience:
 - Conditional Builds: The pipeline detects which files were changed to avoid redundant builds.
 
 🛠️ Local Setup & Cluster Access
+
 To manage the cluster and view metrics from your local terminal, follow these steps:
 
 1. Configure AWS CLI:
