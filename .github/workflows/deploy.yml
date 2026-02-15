@@ -85,3 +85,12 @@ jobs:
         helm upgrade --install my-flask-app ./helm/flask-app \
           --set image.tag=${{ steps.tag_version.outputs.new_tag }} \
           --wait
+    
+    - name: Install Prometheus & Grafana (Monitoring)
+      run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+          --namespace monitoring --create-namespace \
+          --set grafana.enabled=true \
+          --set prometheus.enabled=true
