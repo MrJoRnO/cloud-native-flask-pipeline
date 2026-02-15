@@ -12,6 +12,8 @@ This project demonstrates a complete, automated DevOps lifecycle for a Flask app
 
 - Deployment: Helm Charts for standardized Kubernetes resource management.
 
+- Monitoring: Full observability stack with Prometheus & Grafana.
+
 - Automation: GitHub Actions for full-stack CI/CD (GitOps).
 
 📂 Project Structure
@@ -21,22 +23,6 @@ This project demonstrates a complete, automated DevOps lifecycle for a Flask app
 ├── helm/                # Kubernetes Helm Charts
 ├── terraform/           # IaC modules for AWS resources
 └── README.md            # You are here!
-
-🛠️ Tech Stack
-
-- Cloud: Amazon Web Services (AWS)
-
-- IaC: Terraform
-
-- Containers: Docker
-
-- Registry: Amazon ECR
-
-- Orchestration: Kubernetes (EKS)
-
-- Package Manager: Helm
-
-- CI/CD: GitHub Actions
 
 🚀 The CI/CD Pipeline (GitOps)
 Our pipeline is designed for a fully automated "Hands-Off" experience:
@@ -57,6 +43,21 @@ Our pipeline is designed for a fully automated "Hands-Off" experience:
 
 - Conditional Builds: The pipeline detects which files were changed to avoid redundant builds.
 
+🛠️ Local Setup & Cluster Access
+To manage the cluster and view metrics from your local terminal, follow these steps:
+
+1. Configure AWS CLI:
+
+- aws configure
+
+2. Update Kubeconfig (Connect kubectl to EKS):
+
+- aws eks update-kubeconfig --region eu-central-1 --name devops-assignment-eks
+
+3. Verify Connection:
+
+- kubectl get nodes
+
 📖 How to Use
 
 1. Setup AWS Secrets: Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY to GitHub Repository Secrets.
@@ -69,4 +70,21 @@ Our pipeline is designed for a fully automated "Hands-Off" experience:
 - For a Minor (1.1.0): Add #minor to your commit message.
 
 4. Access the App:
- Run "kubectl get svc" to get the LoadBalancer URL once the pipeline finishes.
+ Run ["kubectl get svc"] to get the LoadBalancer URL once the pipeline finishes.
+
+📊 Monitoring & Observability
+
+The project includes an automated deployment of the Prometheus & Grafana stack to the monitoring namespace.
+
+Accessing Grafana Dashboards:
+1. Establish a Tunnel:
+- kubectl port-forward deployment/monitoring-grafana 3000:3000 -n monitoring
+
+2. Access in Browser: Open http://localhost:3000.
+
+3. Credentials: User: admin 
+**Get Password**: Run the following command to retrieve your auto-generated password:
+   ```bash
+   kubectl get secret -n monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+4. Visualization: Import Dashboard ID 15757 to see real-time CPU/RAM usage of your Flask Pods.
