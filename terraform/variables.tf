@@ -8,7 +8,9 @@ variable "vpc_cidr" {
 }
 
 variable "cluster_name" {
-  type    = string
+  description = "Name of the EKS cluster"
+  type        = string
+  default     = "devops-assignment-eks" # הוספת השורה הזו פותרת את הבעיה
 }
 
 variable "public_subnet_cidrs" {
