@@ -78,13 +78,15 @@ The project includes an automated deployment of the Prometheus & Grafana stack t
 
 Accessing Grafana Dashboards:
 1. Establish a Tunnel:
-- kubectl port-forward deployment/monitoring-grafana 3000:3000 -n monitoring
+ ```bash
+ kubectl port-forward deployment/monitoring-grafana 3000:3000 -n monitoring
 
 2. Access in Browser: Open http://localhost:3000.
 
-3. Credentials: User: admin 
+3. **Credentials:**
+**User**: admin 
 **Get Password**: Run the following command to retrieve your auto-generated password:
    ```bash
    kubectl get secret -n monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 
-4. Visualization: Import Dashboard ID 15757 to see real-time CPU/RAM usage of your Flask Pods.
+4. **Visualization:** Import Dashboard ID 15757 to see real-time CPU/RAM usage of your Flask Pods.
