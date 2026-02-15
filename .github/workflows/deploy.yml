@@ -6,6 +6,7 @@ on:
     paths:
       - 'app/**'
       - 'helm/**'
+      - '.github/**'
 
 jobs:
   deploy:
