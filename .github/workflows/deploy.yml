@@ -2,15 +2,31 @@ name: Deploy to EKS
 
 on:
   push:
-    branches: [ main ] 
+    branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'helm/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # for create tags in github
+    permissions:
+      contents: write
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: '0' # for read the history of tags
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: anothrNick/github-tag-action@1.64.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INITIAL_VERSION: 1.0.0
+        DEFAULT_BUMP: patch # up the last number in the tag (default)
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -23,15 +39,27 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Check if image exists in ECR
+      id: check-image
+      env:
+        ECR_REPOSITORY: flask-app-repo
+        IMAGE_TAG: ${{ steps.tag_version.outputs.new_tag }}
+      run: |
+        if aws ecr describe-images --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG > /dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build, tag, and push image
+      if: steps.check-image.outputs.exists != 'true'
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.registry }}
         ECR_REPOSITORY: flask-app-repo
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG: ${{ steps.tag_version.outputs.new_tag }}
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./app
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./app
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --name devops-assignment-eks --region ${{ secrets.AWS_REGION }}
@@ -39,5 +67,5 @@ jobs:
     - name: Deploy to EKS with Helm
       run: |
         helm upgrade --install my-flask-app ./helm/flask-app \
-          --set image.tag=${{ github.sha }} \
+          --set image.tag=${{ steps.tag_version.outputs.new_tag }} \
           --wait
